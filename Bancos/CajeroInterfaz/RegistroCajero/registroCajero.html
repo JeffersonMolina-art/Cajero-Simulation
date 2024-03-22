@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Configuraciones</title>
+    <style>
+        h2 {
+            text-align: center; 
+        }
+        h3{
+            text-align: center;
+        }
+        .table {
+            width: 60%; /* Ajustar el tamaño de la tabla */
+            margin: 0 auto; /* Centrar la tabla horizontalmente */
+        }
+    </style>
+</head>
+<body>
+    <H2>Configuraciones cajero</H2>
+    <h3>Registro cajero</h3>
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/PERFILADMIN/perfilAdmin.html">Saldo</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/ReponerDinero/Reponer.html">Reponer Dinero</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/RegistroCajero/registroCajero.html">Registro cajero</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/Login/Login.html" style="color: red">Cerrar seccion</a>
+        </li>
+
+      </ul>
+      <table class="table">
+        <thead class="table-primary table-striped">
+            <tr>
+                <th>Fecha</th>
+                <th>Billetes de 100</th>
+                <th>Billetes de 50</th>
+                <th>Total gastado</th>
+                <th>Accion</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-cajero">
+
+        </tbody>
+    </table>
+    <script>
+        fetch("http://localhost:8080/cajero/historialCajero")
+        .then(response => response.json())
+        .then(data => {
+            const tablaCajero = document.getElementById("tabla-cajero");
+            tablaCajero.innerHTML = "";
+
+            data.forEach(item => {
+                const fila = document.createElement("tr");
+                const Fecha = document.createElement("td");
+                const columnabilletes100 = document.createElement("td");
+                const columnabilletes50 = document.createElement("td");
+                const columnasaldo = document.createElement("td");
+                const accion = document.createElement("td");
+
+                Fecha.textContent = item.fechahora
+                columnasaldo.textContent = item.total;
+                columnabilletes100.textContent = item.billetesDe100;
+                columnabilletes50.textContent = item.billetesDe50;
+                accion.textContent = item.accion
+                fila.appendChild(Fecha);
+                fila.appendChild(columnabilletes100);
+                fila.appendChild(columnabilletes50); 
+                fila.appendChild(columnasaldo);
+                fila.appendChild(accion);
+
+                tablaCajero.appendChild(fila);
+            });
+        })
+        .catch(error => console.error("Error: " + error));
+    </script>
+</body>
+</html>

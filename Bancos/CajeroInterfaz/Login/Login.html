@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <button class="custom-button">
+            <img src="/Img/tuerca.png" class="button-img" alt="Boton" >
+        </button>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <title>Cajero</title>
+        <style>
+            /* CSS personalizado para centrar y reducir el tamaño de la imagen */
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+    
+            .card {
+                width: 15rem; 
+            }
+    
+            .custom-button {
+                background-color: #3c69ad; /* Color de fondo */
+                border: none; /* Sin borde */
+                color: white; /* Color del texto */
+                padding: 10x 8px; /* Espaciado interno */
+                text-align: center; /* Alineación del texto */
+                text-decoration: none; /* Sin subrayado */
+                display: inline-block; /* Mostrar como bloque */
+                font-size: 12px; /* Tamaño del texto */
+                margin: 2px 2px; /* Margen exterior */
+                cursor: pointer; /* Cursor */
+                border-radius: 8px; /* Radio de borde */
+            }
+            .button-img {
+                width: 30px; /* Ancho de la imagen */
+                height: auto; /* Altura automática */
+                margin-right: 5px; /* Margen derecho */
+                vertical-align: middle; /* Alineación vertical */
+            }
+        </style>
+    
+    </head>
+<body>
+    <div class="container">
+        <div class="card">
+            <img src="/Img/Usuario.png" class="card-img-top" alt="Usuario">
+            <div class="card-body">
+                <h5 class="card-title">INICIO SESIÓN</h5>
+                <p class="card-text">Digite su número de cuenta</p>
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="inputCuenta" class="form-label">Número de cuenta</label>
+                        <input type="text" class="form-control" id="inputCuenta" placeholder="Número de cuenta">
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputContraseña" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="inputContraseña" placeholder="Contraseña">
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="iniciarSeccion">INICIAR SESIÓN</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+            const inicio = document.getElementById("iniciarSeccion");
+
+            inicio.addEventListener("click", function(event) {
+                event.preventDefault();
+
+                const numeroCuentaTxt = document.getElementById("inputCuenta").value;
+                const contraseñaTxt = document.getElementById("inputContraseña").value;
+                localStorage.setItem('cuenta', numeroCuentaTxt);
+                localStorage.setItem('pin', contraseñaTxt);
+                const url = `http://localhost:8080/usuario/inicio/${numeroCuentaTxt},${contraseñaTxt}`;
+
+                fetch(url)
+                .then(response => {
+                    if (response.status === 200) {
+                        response.json().then(data => {
+                            // Verificar si se recibió algún dato
+                            if (data.length > 0) {
+                                const userData = data[0];
+                                const rol = userData.rol;
+                                const cuenta = userData.nombreUsuario;
+                                const saldoAc = userData.saldo;
+                                const pin = userData.pin;
+
+                                
+                                if (contraseñaTxt === userData.pin) {
+                                    if (rol === "USER") {
+                                        alert("Inicio de sesión exitoso como usuario");
+                                        window.location.href = "/Perfil/Perfil.html";
+                                    }
+                                } else {
+                                    alert("Contraseña incorrecta");
+                                }
+                            } else {
+                                alert("Contraseña o usuario incorrecto");
+                            }
+                        });
+                    } else {
+                        console.error("No se pudo iniciar sesión, verifica tu número de cuenta y contraseña");
+                    }
+                })
+                .catch(error => console.error("Error al iniciar sesión: " + error));
+            });
+        });
+        const customButton = document.querySelector(".custom-button");
+            customButton.addEventListener("click", function() {
+                // Redirigir a otra página al hacer clic en el botón
+                window.location.href = "/Admin/loginAdmin.html";
+            });
+        
+    </script>
+</body>
+</html>

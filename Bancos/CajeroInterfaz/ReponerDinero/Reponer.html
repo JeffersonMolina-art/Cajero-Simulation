@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Configuraciones</title>
+    <style>
+        h2 {
+            text-align: center; 
+        }
+        h3{
+            text-align: center;
+        }
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .login-container input {
+            width: 100%;
+            max-width: 300px; /* Define el ancho máximo */
+            margin-bottom: 10px; /* Espacio entre los campos */
+        }
+    </style>
+</head>
+<body>
+    <H2>Configuraciones cajero</H2>
+    <h3>Reponer Dinero</h3>
+    <ul class="nav justify-content-center">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/PERFILADMIN/perfilAdmin.html">Saldo</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="Reponer.html">Reponer Dinero</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/RegistroCajero/registroCajero.html">Registro cajero</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/Login/Login.html" style="color: red">Cerrar seccion</a>
+        </li>
+      </ul>
+    <div class="row justify-content-center">
+        <div class="card" style="width: 18rem; margin-right: 10px;">
+            <img src="/Img/billete-de-100-dolares.png" class="card-img-top" alt="Billetes de 100">
+            <div class="card-body">
+                <h5 class="card-title">Billetes de 100</h5>
+                <div class="mb-3">
+                    <input type="number" class="form-control" id="inputBilletes100" placeholder="Cantidad" min="0" pattern="[0-9]+" title="Por favor, ingrese solo números positivos">
+                </div>
+            </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+            <img src="/Img/billete-de-dolar.png" class="card-img-top" alt="Billetes de 50">
+            <div class="card-body">
+                <h5 class="card-title">Billetes de 50</h5>
+                <div class="mb-3">
+                    <input type="number" class="form-control" id="inputBilletes50" placeholder="Cantidad" min="0" pattern="[0-9]+" title="Por favor, ingrese solo números positivos">
+                </div>
+            </div>
+        </div>
+    </div>
+    <p></p>
+    <div class="login-container">
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="inputCuenta" class="form-label">Nombre de usuario ADMIN</label>
+                <input type="text" class="form-control" id="inputCuenta" placeholder="Usuario">
+            </div>
+            <div class="mb-3">
+                <label for="inputContraseña" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="inputContraseña" placeholder="Contraseña">
+            </div>
+        </form>
+    </div>
+    <div class="text-center mt-3">
+        <button class="btn btn-success" id="reponer">Reponer</button>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+        const reponer = document.getElementById("reponer");
+
+        reponer.addEventListener("click", function(event) {
+            event.preventDefault();
+
+            const numeroCuentaTxt = document.getElementById("inputCuenta").value;
+            const contraseñaTxt = document.getElementById("inputContraseña").value;
+            const billetesDe100 = document.getElementById("inputBilletes100").value;
+            const billetesDe50 = document.getElementById("inputBilletes50").value;
+
+            const data = {
+                user: numeroCuentaTxt,
+                pin: contraseñaTxt,
+                billetesDe100: billetesDe100,
+                billetesDe50: billetesDe50
+            };
+
+            fetch(`http://localhost:8080/cajero/reponer/${numeroCuentaTxt}/${contraseñaTxt}/${billetesDe100}/${billetesDe50}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Reposición realizada con éxito");
+                    window.location.href = "/PERFILADMIN/perfilAdmin.html";
+                } else {
+                    throw new Error("Error en la solicitud");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Hubo un error al intentar reponer el dinero");
+            });
+        });
+    });
+
+
+    </script>
+</body>
+</html>
